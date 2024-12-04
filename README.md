@@ -11,64 +11,71 @@ and the Flutter guide for
 [developing packages and plugins](https://flutter.dev/developing-packages).
 -->
 
-This package helps the you to connect to your thermal usb printer via USB in Flutter Web and print. It has been tested in MP583 thermal printer.
+This package allows you to connect to a thermal printer via USB in Flutter Web and print.
+
+It is a fork of [usb_printer_thermal_web](https://github.com/usmannaushahi/usb_thermal_printer_web) and improves upon it and provides more configuration options.
 
 ## Features
 
-printText: It allows you to print a simple text. You can center align or bold the text if you want to.
+printFlex: This function accepts a list of string, a list of flex sizes as int and a list of alignments. Using this, you can print any data in tabular form. It takes care of wrapping any long text that does not fit within its flex size.
+
+printText: It allows you to print any text. Configuration options include making the text bold, change alignment or double its size (make it a title).
 
 printEmptyLine: It prints an empty line to create add a space between two printed statements
 
 printDottedLine: It prints a dotted line or you can use it as a divider
 
-printKeyValue: It takes two inputs and prints them as separate columns within a row. It is very helpful if you want to print key-value pairs i.e., product name and sale price.
+printKeyValue: It takes two inputs and prints them as separate columns within a row.
 
 printBarcode: It prints the barcode and prints the given barcode String beneath the barcode.
 
 ## Getting started
 
-You should have a web project as this package only supports Flutter Web for now. Before starting the printing, you need to call the pairDevice() function and provide
-the vendorId, productId, interfaceNumber, and endpointNumber. The vendorId and productId are required and you can find them in the device description or check directly
-from your system by connecting it via USB. The interfaceNumber and endpointNumber are default set as 0 and 1 respectively which works for most cases. However, if it does not
-works, try to find the correct ones and change accordingly.
+You should have a web project as this package only supports Flutter Web for now. Before starting the printing, you need to call the pairDevice() function.
+You can **optionally** provide the vendorId, productId, interfaceNumber and endpointNumber. If you do not pass these variables, you can still select a device from the list of all connected USB devices and it will automatically try to determine these variables.
 
 ## Usage
 
-The function below prints a sample receipt. NOTE: You may have to change the vendorId, productId, and may also provide interfaceNumber and endpointNumber to the function pairDevice().
+The function below prints a sample receipt. A fully functional example is present in the `example` directory. Simply clone the package, `cd` into the example directory and run `flutter run -d chrome` to test locally.
 
 ```dart
 //Create an instance of printer
-  WebThermalPrinter _printer = WebThermalPrinter();
+WebThermalPrinter _printer = WebThermalPrinter();
 
-// A Dummy Function that you can call on any button and test.
+printReceipt() async {
+  await _printer.pairDevice();
 
-printReceipt()
-async
-{
-
-  //Pairing Device is required.
-  await _printer.pairDevice(vendorId: 0x6868, productId: 0x0200);
-
-  await _printer.printText('DKT Mart',
-      bold: true, centerAlign: true);
+  await _printer.printText('Sebastien Brocard',
+      bold: true, align: 'center', title: true);
   await _printer.printEmptyLine();
 
   await _printer.printKeyValue("Products", "Sale");
   await _printer.printEmptyLine();
 
-  for (int i = 0; i < 10; i++) {
-
-    await _printer.printKeyValue('A big title very big title ${i + 1}',
-        '${(i + 1) * 510}.00 AED');
+  for (int i = 0; i < 2; i++) {
+    await _printer.printKeyValue(
+        'A big title very big title ${i + 1}', '${(i + 1) * 510}.00 AED');
     await _printer.printEmptyLine();
-
   }
 
+  await _printer.printFlex(
+      ['Chocolate Truffle Cake Small', '1', '550.85', '550.85'],
+      [4, 1, 2, 2],
+      ['left', 'right', 'right', 'right']);
+
+  await _printer.printFlex(
+      ['Chocolate Truffle Cake Small', '1', '550.85', '550.85'],
+      [4, 1, 2, 2],
+      ['left', 'right', 'right', 'right']);
+
+  await _printer.printFlex(
+      ['Chocolate Truffle Cake Small', '1', '550.85', '550.85'],
+      [4, 1, 2, 2],
+      ['left', 'right', 'right', 'right']);
+
   await _printer.printDottedLine();
-  await _printer.printEmptyLine();
 
   await _printer.printBarcode('123456');
-  await _printer.printEmptyLine();
 
   await _printer.printEmptyLine();
   await _printer.closePrinter();

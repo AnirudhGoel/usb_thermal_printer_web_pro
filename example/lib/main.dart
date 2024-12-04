@@ -74,8 +74,10 @@ class _MyHomePageState extends State<MyHomePage> {
     WebThermalPrinter _printer = WebThermalPrinter();
 
     //Pairing Device is required.
-    await _printer.pairDevice(
-        vendorId: 0x0fe6, productId: 0x811e, interfaceNo: 0, endpointNo: 2);
+    // await _printer.pairDevice(
+    //     vendorId: 0x0fe6, productId: 0x811e, interfaceNo: 0, endpointNo: 2);
+
+    await _printer.pairDevice();
 
     await _printer.printText('Sebastien Brocard',
         bold: true, align: 'center', title: true);

@@ -46,20 +46,31 @@ class WebThermalPrinter {
           [DeviceFilter(vendorId: vendorId, productId: productId)]);
     }
 
-    interfaceNumber = interfaceNo ?? 0; // By Default, it is usually 0
-    endpointNumber = endpointNo ?? 1; // By Default, it is usually 1
+    // USBDeviceInfo deviceInfo =
+    //     await usbDevice.getPairedDeviceInfo(pairedDevice); // get device's info
+    // print(deviceInfo);
 
-    /////////////////////////////////////////////////////////////////////
     List<USBConfiguration> availableConfigurations =
         await usbDevice.getAvailableConfigurations(
             pairedDevice); // get device's configurations
 
-    USBDeviceInfo deviceInfo =
-        await usbDevice.getPairedDeviceInfo(pairedDevice); // get device's info
+    int? autoDetectedInterfaceNumber =
+        availableConfigurations[0].usbInterfaces?[0].interfaceNumber;
+    int? autoDetectedEndpointNumber = availableConfigurations[0]
+        .usbInterfaces?[0]
+        .alternatesInterface?[0]
+        .endpoints?[0]
+        .endpointNumber;
 
     print(availableConfigurations);
-    print(deviceInfo);
-    /////////////////////////////////////////////////////////////////////
+
+    interfaceNumber = interfaceNo ??
+        (autoDetectedInterfaceNumber ?? 0); // By Default, it is usually 0
+    endpointNumber = endpointNo ??
+        (autoDetectedEndpointNumber ?? 1); // By Default, it is usually 1
+
+    print("Interface Number: ${interfaceNumber}");
+    print("Endpoint Number: ${endpointNumber}");
 
     await usbDevice.open(pairedDevice);
     await usbDevice.claimInterface(pairedDevice, interfaceNumber);
