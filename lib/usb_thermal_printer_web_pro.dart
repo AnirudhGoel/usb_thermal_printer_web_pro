@@ -94,7 +94,7 @@ class WebThermalPrinter {
       var titleRow = titleRows.length > i ? titleRows[i] : '';
       var valueRow = valueRows.length > i ? valueRows[i] : '';
 
-      printToPaper(
+      await printToPaper(
           "${titleRow.padRight(titleColumnWidth)}${valueRow.padLeft(valueColumnWidth)}");
     }
   }
@@ -136,10 +136,10 @@ class WebThermalPrinter {
             (line < wrappedRows[col].length) ? wrappedRows[col][line] : "";
         row += _formatText(text, columnWidths[col], alignList[col]);
       }
-      printToPaper(row, newline: false);
+      await printToPaper(row, newline: false);
     }
 
-    printEmptyLine();
+    await printEmptyLine();
   }
 
   String _formatText(String text, int width, String alignment) {
@@ -237,7 +237,7 @@ class WebThermalPrinter {
         : _splitStringIntoRows(text, printerWidth);
     // Print each row separately
     for (var i = 0; i < textRows.length; i++) {
-      printToPaper(textRows[i]);
+      await printToPaper(textRows[i]);
     }
 
     var boldOffBytes = Uint8List.fromList([0x1B, 0x45, 0x00]);
@@ -255,14 +255,14 @@ class WebThermalPrinter {
 
   Future<void> printEmptyLine() async {
     if (!kIsWeb) return;
-    printToPaper("");
+    await printToPaper("");
   }
 
   Future<void> printDottedLine() async {
     if (!kIsWeb) return;
     // var dottedLine = ''.padRight(printerWidth - leftPad, '-');
     String dottedLine = '_' * (printerWidth - leftPad);
-    printText(dottedLine, align: 'center');
+    await printText(dottedLine, align: 'center');
     // printToPaper(dottedLine);
   }
 
