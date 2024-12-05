@@ -1,3 +1,6 @@
+## v0.1.1
+Specify web as the only supported platform on pub.dev
+
 ## v0.1.0
 
 Multiple changes:

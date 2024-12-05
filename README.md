@@ -13,7 +13,7 @@ and the Flutter guide for
 
 This package allows you to connect to a thermal printer via USB in Flutter Web and print.
 
-It is a fork of [usb_printer_thermal_web](https://github.com/usmannaushahi/usb_thermal_printer_web) and improves upon it and provides more configuration options.
+It forks from [usb_printer_thermal_web](https://pub.dev/packages/usb_thermal_printer_web) and improves upon it and provides more configuration options.
 
 ## Features
 
